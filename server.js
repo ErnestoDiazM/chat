@@ -4,18 +4,30 @@ const socketIo = require('socket.io');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const path = require('path');
+const cors = require('cors');
 
+// Configuración de la aplicación
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: process.env.NODE_ENV === 'production' ? '*' : 'http://localhost:3000',
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
 
-app.use(morgan('dev'));
+// Middleware
+app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cookieParser());
 app.use(express.json());
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Manejo de usuarios conectados
 const connectedUsers = new Map();
 
+// Socket.io
 io.on('connection', (socket) => {
     console.log('Usuario conectado:', socket.id);
 
@@ -73,11 +85,24 @@ io.on('connection', (socket) => {
     });
 });
 
+// Rutas
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Manejo de errores
+app.use((req, res, next) => {
+    res.status(404).json({ message: 'Ruta no encontrada' });
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Error interno del servidor' });
+});
+
+// Iniciar servidor
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log(`Modo: ${process.env.NODE_ENV || 'desarrollo'}`);
 });

@@ -1,0 +1,44 @@
+.messages-container {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.message {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.message.received {
+    background-color: #f8f9fa;
+}
+
+.message.sent {
+    background-color: #e3f2fd;
+    margin-left: 20%;
+}
+
+.timestamp {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.user-list-item {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    background-color: #f8f9fa;
+    margin-bottom: 0.5rem;
+}
+
+.online-indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #28a745;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
